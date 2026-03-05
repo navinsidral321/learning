@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Mastery Tracker - FAANG Ready</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            width: 250px;
+        }
+
+        /* Main Content */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--accent);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-card.completed {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);
+        }
+
+        .topic-card.in-progress {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), transparent);
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .topic-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary);
+            flex: 1;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .difficulty-easy {
+            background: rgba(16, 185, 129, 0.15);
+            color: #047857;
+        }
+
+        .difficulty-medium {
+            background: rgba(245, 158, 11, 0.15);
+            color: #b45309;
+        }
+
+        .difficulty-hard {
+            background: rgba(239, 68, 68, 0.15);
+            color: #b91c1c;
+        }
+
+        .frequency {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+        }
+
+        .frequency-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .frequency-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            width: var(--frequency-width, 0%);
+        }
+
+        .problems {
+            margin-bottom: 16px;
+        }
+
+        .problem-item {
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .problem-item:hover {
+            background: #f1f5f9;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .problem-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .problem-item input:checked + .problem-name {
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: var(--success);
+        }
+
+        .leetcode-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #ffa500;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .leetcode-link:hover {
+            background: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        .progress-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .progress-stats span {
+            font-weight: 600;
+        }
+
+        .progress-fill {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transition: width 0.3s ease;
+        }
+
+        .difficulty-filter {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border-left: 5px solid;
+        }
+
+        .legend-not-started {
+            border-left-color: var(--accent);
+        }
+
+        .legend-in-progress {
+            border-left-color: var(--warning);
+        }
+
+        .legend-completed {
+            border-left-color: var(--success);
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 30px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-banner h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-banner p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            margin-bottom: 5px;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 DSA Mastery Tracker</h1>
+            <p>Master the most-asked DSA topics for FAANG & Tier-1 Product Companies</p>
+            
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="overallProgress"></div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="totalProblems">0</div>
+                    <div class="stat-label">Total Problems</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="completedProblems">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="completionRate">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <h3>✨ How to Use This Tracker</h3>
+            <p>Master these DSA topics and you're guaranteed interviews at Google, Amazon, Meta, Apple, Microsoft, and other top product companies. Check off problems as you complete them. Target: 80% completion in 6-8 weeks. Focus on patterns, not memorization.</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search topics or problems...">
+            <button class="btn btn-primary" onclick="resetProgress()">Reset Progress</button>
+            <button class="btn btn-secondary export-btn" onclick="downloadProgress()">📥 Export Progress</button>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box legend-not-started"></div>
+                <span>Not Started</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-in-progress"></div>
+                <span>In Progress</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box legend-completed"></div>
+                <span>Completed</span>
+            </div>
+        </div>
+
+        <!-- Difficulty Filter -->
+        <div class="difficulty-filter">
+            <button class="filter-btn active" onclick="filterByDifficulty('all')">All Difficulties</button>
+            <button class="filter-btn" onclick="filterByDifficulty('Easy')">Easy</button>
+            <button class="filter-btn" onclick="filterByDifficulty('Medium')">Medium</button>
+            <button class="filter-btn" onclick="filterByDifficulty('Hard')">Hard</button>
+        </div>
+
+        <!-- Topics Grid -->
+        <div class="topics-grid" id="topicsGrid"></div>
+    </div>
+
+    <script>
+        const topicsData = [
+            {
+                id: 1,
+                title: "Two Pointers",
+                difficulty: "Easy",
+                frequency: 85,
+                problems: [
+                    { name: "Two Sum", url: "https://leetcode.com/problems/two-sum/" },
+                    { name: "Valid Palindrome", url: "https://leetcode.com/problems/valid-palindrome/" },
+                    { name: "Container With Most Water", url: "https://leetcode.com/problems/container-with-most-water/" },
+                    { name: "3Sum", url: "https://leetcode.com/problems/3sum/" },
+                    { name: "Trapping Rain Water", url: "https://leetcode.com/problems/trapping-rain-water/" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Sliding Window",
+                difficulty: "Medium",
+                frequency: 80,
+                problems: [
+                    { name: "Longest Substring Without Repeating Characters", url: "https://leetcode.com/problems/longest-substring-without-repeating-characters/" },
+                    { name: "Minimum Window Substring", url: "https://leetcode.com/problems/minimum-window-substring/" },
+                    { name: "Sliding Window Maximum", url: "https://leetcode.com/problems/sliding-window-maximum/" },
+                    { name: "Longest Repeating Character Replacement", url: "https://leetcode.com/problems/longest-repeating-character-replacement/" },
+                    { name: "Permutation in String", url: "https://leetcode.com/problems/permutation-in-string/" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Hash Maps & Sets",
+                difficulty: "Easy",
+                frequency: 90,
+                problems: [
+                    { name: "Valid Anagram", url: "https://leetcode.com/problems/valid-anagram/" },
+                    { name: "Group Anagrams", url: "https://leetcode.com/problems/group-anagrams/" },
+                    { name: "Two Sum II", url: "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" },
+                    { name: "Intersection of Two Arrays", url: "https://leetcode.com/problems/intersection-of-two-arrays/" },
+                    { name: "Happy Number", url: "https://leetcode.com/problems/happy-number/" }
+                ]
+            },
+            {
+                id: 4,
+                title: "Binary Search",
+                difficulty: "Medium",
+                frequency: 75,
+                problems: [
+                    { name: "Binary Search", url: "https://leetcode.com/problems/binary-search/" },
+                    { name: "Search in Rotated Sorted Array", url: "https://leetcode.com/problems/search-in-rotated-sorted-array/" },
+                    { name: "Median of Two Sorted Arrays", url: "https://leetcode.com/problems/median-of-two-sorted-arrays/" },
+                    { name: "Find First and Last Position", url: "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/" },
+                    { name: "Peak Index in a Mountain Array", url: "https://leetcode.com/problems/peak-index-in-a-mountain-array/" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Trees - DFS/BFS",
+                difficulty: "Medium",
+                frequency: 88,
+                problems: [
+                    { name: "Binary Tree Level Order Traversal", url: "https://leetcode.com/problems/binary-tree-level-order-traversal/" },
+                    { name: "Lowest Common Ancestor", url: "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" },
+                    { name: "Validate Binary Search Tree", url: "https://leetcode.com/problems/validate-binary-search-tree/" },
+                    { name: "Binary Tree Maximum Path Sum", url: "https://leetcode.com/problems/binary-tree-maximum-path-sum/" },
+                    { name: "Serialize and Deserialize Binary Tree", url: "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Graphs - DFS/BFS",
+                difficulty: "Medium",
+                frequency: 82,
+                problems: [
+                    { name: "Number of Islands", url: "https://leetcode.com/problems/number-of-islands/" },
+                    { name: "Clone Graph", url: "https://leetcode.com/problems/clone-graph/" },
+                    { name: "Course Schedule", url: "https://leetcode.com/problems/course-schedule/" },
+                    { name: "Alien Dictionary", url: "https://leetcode.com/problems/alien-dictionary/" },
+                    { name: "Word Ladder", url: "https://leetcode.com/problems/word-ladder/" }
+                ]
+            },
+            {
+                id: 7,
+                title: "Dynamic Programming",
+                difficulty: "Hard",
+                frequency: 70,
+                problems: [
+                    { name: "Coin Change", url: "https://leetcode.com/problems/coin-change/" },
+                    { name: "Longest Increasing Subsequence", url: "https://leetcode.com/problems/longest-increasing-subsequence/" },
+                    { name: "Edit Distance", url: "https://leetcode.com/problems/edit-distance/" },
+                    { name: "House Robber", url: "https://leetcode.com/problems/house-robber/" },
+                    { name: "Burst Balloons", url: "https://leetcode.com/problems/burst-balloons/" }
+                ]
+            },
+            {
+                id: 8,
+                title: "String Problems",
+                difficulty: "Easy",
+                frequency: 78,
+                problems: [
+                    { name: "Longest Palindromic Substring", url: "https://leetcode.com/problems/longest-palindromic-substring/" },
+                    { name: "Word Break", url: "https://leetcode.com/problems/word-break/" },
+                    { name: "Regular Expression Matching", url: "https://leetcode.com/problems/regular-expression-matching/" },
+                    { name: "Reverse Words in a String", url: "https://leetcode.com/problems/reverse-words-in-a-string/" },
+                    { name: "Implement strStr", url: "https://leetcode.com/problems/implement-strstr/" }
+                ]
+            },
+            {
+                id: 9,
+                title: "Design Problems",
+                difficulty: "Hard",
+                frequency: 85,
+                problems: [
+                    { name: "LRU Cache", url: "https://leetcode.com/problems/lru-cache/" },
+                    { name: "LFU Cache", url: "https://leetcode.com/problems/lfu-cache/" },
+                    { name: "Implement HashMap", url: "https://leetcode.com/problems/design-hashmap/" },
+                    { name: "Min Stack", url: "https://leetcode.com/problems/min-stack/" },
+                    { name: "Implement Trie", url: "https://leetcode.com/problems/implement-trie-prefix-tree/" }
+                ]
+            },
+            {
+                id: 10,
+                title: "Arrays - Advanced",
+                difficulty: "Medium",
+                frequency: 72,
+                problems: [
+                    { name: "Product of Array Except Self", url: "https://leetcode.com/problems/product-of-array-except-self/" },
+                    { name: "Majority Element", url: "https://leetcode.com/problems/majority-element/" },
+                    { name: "Maximum Product Subarray", url: "https://leetcode.com/problems/maximum-product-subarray/" },
+                    { name: "Rotate Array", url: "https://leetcode.com/problems/rotate-array/" },
+                    { name: "Merge Sorted Array", url: "https://leetcode.com/problems/merge-sorted-array/" }
+                ]
+            }
+        ];
+
+        let filteredData = [...topicsData];
+        let progress = JSON.parse(localStorage.getItem('dsa-progress')) || {};
+
+        function renderTopics() {
+            const grid = document.getElementById('topicsGrid');
+            grid.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>No topics match your search</p></div>';
+                return;
+            }
+
+            filteredData.forEach(topic => {
+                const completedProblems = topic.problems.filter(p => progress[p.name]).length;
+                const status = completedProblems === 0 ? '' : completedProblems === topic.problems.length ? 'completed' : 'in-progress';
+                
+                const card = document.createElement('div');
+                card.className = `topic-card ${status}`;
+                card.innerHTML = `
+                    <div class="topic-header">
+                        <div class="topic-title">${topic.title}</div>
+                        <span class="difficulty-badge difficulty-${topic.difficulty.toLowerCase()}">${topic.difficulty}</span>
+                    </div>
+                    
+                    <div class="frequency">
+                        <span>Asked in ${topic.frequency}% of interviews</span>
+                        <div class="frequency-bar">
+                            <div class="frequency-fill" style="--frequency-width: ${topic.frequency}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="problems">
+                        ${topic.problems.map((problem, idx) => {
+                            const isCompleted = progress[problem.name];
+                            return `
+                                <div class="problem-item">
+                                    <input type="checkbox" class="checkbox" ${isCompleted ? 'checked' : ''} 
+                                           onchange="toggleProblem('${problem.name}', this.checked)" id="problem-${topic.id}-${idx}">
+                                    <label for="problem-${topic.id}-${idx}" class="problem-name">${problem.name}</label>
+                                    <a href="${problem.url}" target="_blank" class="leetcode-link" title="Open on LeetCode">LC ↗</a>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-stats">
+                            <span>${completedProblems}/${topic.problems.length} Completed</span>
+                            <span>${Math.round((completedProblems / topic.problems.length) * 100)}%</span>
+                        </div>
+                        <div class="progress-fill">
+                            <div class="progress-fill-inner" style="width: ${(completedProblems / topic.problems.length) * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            updateStats();
+        }
+
+        function toggleProblem(name, checked) {
+            if (checked) {
+                progress[name] = true;
+            } else {
+                delete progress[name];
+            }
+            localStorage.setItem('dsa-progress', JSON.stringify(progress));
+            renderTopics();
+        }
+
+        function updateStats() {
+            const totalProblems = topicsData.reduce((sum, t) => sum + t.problems.length, 0);
+            const completedProblems = Object.keys(progress).length;
+            const completionRate = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
+
+            document.getElementById('totalProblems').textContent = totalProblems;
+            document.getElementById('completedProblems').textContent = completedProblems;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            document.getElementById('overallProgress').style.width = completionRate + '%';
+        }
+
+        function filterByDifficulty(difficulty) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Filter topics
+            if (difficulty === 'all') {
+                filteredData = [...topicsData];
+            } else {
+                filteredData = topicsData.filter(t => t.difficulty === difficulty);
+            }
+            renderTopics();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            filteredData = topicsData.filter(topic => 
+                topic.title.toLowerCase().includes(query) ||
+                topic.problems.some(p => p.name.toLowerCase().includes(query))
+            );
+            renderTopics();
+        });
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                progress = {};
+                localStorage.setItem('dsa-progress', JSON.stringify(progress));
+                renderTopics();
+            }
+        }
+
+        function downloadProgress() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                progress: progress,
+                stats: {
+                    totalProblems: document.getElementById('totalProblems').textContent,
+                    completedProblems: document.getElementById('completedProblems').textContent,
+                    completionRate: document.getElementById('completionRate').textContent
+                }
+            };
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2)));
+            element.setAttribute('download', `dsa-progress-${new Date().toISOString().split('T')[0]}.json`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Initial render
+        renderTopics();
+    </script>
+</body>
+</html>

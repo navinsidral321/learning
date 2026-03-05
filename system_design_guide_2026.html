@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Design Interview Master Guide 2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #06b6d4;
+            --accent-light: #22d3ee;
+            --text: #e2e8f0;
+            --text-dim: #cbd5e1;
+            --border: #334155;
+            --success: #10b981;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f35 100%);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            overflow-x: auto;
+            max-width: 70%;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        main {
+            margin-top: 70px;
+        }
+
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.1) 0%, rgba(15, 23, 42, 0) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            scroll-margin-top: 100px;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 1rem;
+        }
+
+        section h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-light);
+        }
+
+        section h4 {
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+
+        .points {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .points li {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .points li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+        }
+
+        .hljs {
+            background: transparent !important;
+        }
+
+        .diagram {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .callout {
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .highlight {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            section h2 {
+                font-size: 1.8rem;
+            }
+            .nav-links {
+                max-width: 50%;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-logo">⚙️ System Design 2026</div>
+        <ul class="nav-links">
+            <li><a href="#lld">LLD</a></li>
+            <li><a href="#hld">HLD</a></li>
+            <li><a href="#solid">SOLID</a></li>
+            <li><a href="#cap">CAP</a></li>
+            <li><a href="#patterns">Patterns</a></li>
+            <li><a href="#case">Case Study</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>System Design Interview Master Guide</h1>
+            <p>Complete reference for 2026 with LLD, HLD, SOLID, CAP Theorem, Design Patterns & Real-World Case Study</p>
+        </section>
+
+        <!-- ==================== LLD SECTION ==================== -->
+        <section id="lld">
+            <h2>Low-Level Design (LLD)</h2>
+            <p>Low-Level Design focuses on detailed component design, class relationships, and code-level implementation patterns.</p>
+
+            <div class="card">
+                <h3>1. Class Design & Encapsulation</h3>
+                <ul class="points">
+                    <li><span class="highlight">Encapsulation:</span> Bundle data and methods, hide internal implementation from external access using access modifiers</li>
+                    <li><span class="highlight">Single Responsibility:</span> Each class has ONE reason to change and ONE primary responsibility</li>
+                    <li><span class="highlight">Composition over Inheritance:</span> Prefer composition to inheritance for flexibility and avoiding rigid hierarchies</li>
+                    <li><span class="highlight">Clear Public Interfaces:</span> Minimal, purpose-driven public methods; rest should be private</li>
+                    <li><span class="highlight">Dependency Injection:</span> Pass dependencies explicitly through constructors rather than creating internally</li>
+                </ul>
+
+                <h4>Class Hierarchy UML:</h4>
+                <div class="diagram">
+                    <div class="mermaid">
+                        classDiagram
+                        class PaymentProcessor {
+                            -String paymentId
+                            -BigDecimal amount
+                            +processPayment() bool
+                            +validatePayment() bool
+                        }
+                        
+                        class CreditCardProcessor {
+                            -String cardNumber
+                            +encryptCard()
+                            +validateExpiry()
+                        }
+                        
+                        class UPIProcessor {
+                            -String upiId
+                            +validateUPI()
+                            +sendOTP()
+                        }
+                        
+                        PaymentProcessor <|-- CreditCardProcessor
+                        PaymentProcessor <|-- UPIProcessor
+                    </div>
+                </div>
+
+                <h4>Code Example - Dependency Injection Pattern:</h4>
+                <pre><code class="language-java">// Good LLD Design with Dependency Injection
+public interface PaymentProcessor {
+    PaymentResult process(PaymentRequest request);
+}
+
+public class CreditCardProcessor implements PaymentProcessor {
+    private final EncryptionService encryptionService;
+    private final BankGateway bankGateway;
+    
+    // Dependencies injected via constructor
+    public CreditCardProcessor(EncryptionService encryptionService, 
+                              BankGateway bankGateway) {
+        this.encryptionService = encryptionService;
+        this.bankGateway = bankGateway;
+    }
+    
+    @Override
+    public PaymentResult process(PaymentRequest request) {
+        validateCard(request.getCardDetails());
+        String encrypted = encryptionService.encrypt(request.getCardDetails());
+        return bankGateway.processTransaction(encrypted, request.getAmount());
+    }
+    
+    private void validateCard(CardDetails card) {
+        // Validation logic
+    }
+}
+
+public class PaymentService {
+    private final PaymentProcessor processor;
+    
+    public PaymentService(PaymentProcessor processor) {
+        this.processor = processor;
+    }
+    
+    public PaymentResult handlePayment(PaymentRequest request) {
+        return processor.process(request);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>2. Design Patterns in LLD</h3>
+                
+                <h4>Creational Patterns:</h4>
+                <ul class="points">
+                    <li><span class="highlight">Singleton:</span> One instance only (DatabaseConnection, Logger) - thread-safe using Bill Pugh pattern</li>
+                    <li><span class="highlight">Factory:</span> Create objects without specifying exact classes (PaymentGatewayFactory)</li>
+                    <li><span class="highlight">Builder:</span> Construct complex objects step-by-step (OrderBuilder for many parameters)</li>
+                </ul>
+
+                <h4>Structural Patterns:</h4>
+                <ul class="points">
+                    <li><span class="highlight">Adapter:</span> Make incompatible interfaces work together (Stripe API to payment interface)</li>
+                    <li><span class="highlight">Decorator:</span> Add features dynamically without modifying original (CachedPaymentGateway wraps gateway)</li>
+                    <li><span class="highlight">Facade:</span> Provide simplified interface to complex subsystem (OrderProcessingFacade)</li>
+                </ul>
+
+                <h4>Behavioral Patterns:</h4>
+                <ul class="points">
+                    <li><span class="highlight">Observer:</span> Notify multiple objects about state changes (OrderObserver for email, SMS)</li>
+                    <li><span class="highlight">Strategy:</span> Interchangeable algorithms at runtime (PercentageDiscount vs FlatDiscount)</li>
+                    <li><span class="highlight">State:</span> Object behavior changes with state (Order: Pending → Confirmed → Shipped)</li>
+                    <li><span class="highlight">Template Method:</span> Define algorithm skeleton, subclasses override steps</li>
+                    <li><span class="highlight">Chain of Responsibility:</span> Pass request through handler chain until handled</li>
+                </ul>
+
+                <h4>Strategy Pattern Example:</h4>
+                <pre><code class="language-java">// Strategy Pattern for flexible discount strategies
+public interface DiscountStrategy {
+    double applyDiscount(double amount);
+}
+
+public class PercentageDiscount implements DiscountStrategy {
+    private final double percentage;
+    public PercentageDiscount(double percentage) { this.percentage = percentage; }
+    
+    @Override
+    public double applyDiscount(double amount) {
+        return amount * (1 - percentage / 100);
+    }
+}
+
+public class FlatDiscount implements DiscountStrategy {
+    private final double flatAmount;
+    public FlatDiscount(double flatAmount) { this.flatAmount = flatAmount; }
+    
+    @Override
+    public double applyDiscount(double amount) {
+        return Math.max(0, amount - flatAmount);
+    }
+}
+
+public class Order {
+    private double totalAmount;
+    private DiscountStrategy discountStrategy;
+    
+    public void setDiscountStrategy(DiscountStrategy strategy) {
+        this.discountStrategy = strategy;
+    }
+    
+    public double getFinalPrice() {
+        if (discountStrategy == null) return totalAmount;
+        return discountStrategy.applyDiscount(totalAmount);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>3. State Management & Immutability</h3>
+                <ul class="points">
+                    <li><span class="highlight">Immutability:</span> Create immutable objects for thread safety (final fields, no setters)</li>
+                    <li><span class="highlight">Builder Pattern:</span> For complex objects with many optional parameters</li>
+                    <li><span class="highlight">State Machines:</span> Model lifecycle with defined states and valid transitions</li>
+                    <li><span class="highlight">Event Sourcing:</span> Track all changes as immutable events for auditability</li>
+                    <li><span class="highlight">Validations:</span> Validate state transitions and class invariants</li>
+                </ul>
+
+                <h4>Immutable Order with Builder:</h4>
+                <pre><code class="language-java">// Immutable Order class
+public class Order {
+    private final String orderId;
+    private final String userId;
+    private final List&lt;OrderItem&gt; items;
+    private final OrderStatus status;
+    private final BigDecimal totalAmount;
+    private final LocalDateTime createdAt;
+    
+    private Order(Builder builder) {
+        this.orderId = builder.orderId;
+        this.userId = builder.userId;
+        this.items = Collections.unmodifiableList(builder.items);
+        this.status = builder.status;
+        this.totalAmount = builder.totalAmount;
+        this.createdAt = builder.createdAt;
+    }
+    
+    public static class Builder {
+        private final String orderId;
+        private final String userId;
+        private List&lt;OrderItem&gt; items = new ArrayList&lt;&gt;();
+        private OrderStatus status = OrderStatus.PENDING;
+        private BigDecimal totalAmount;
+        private LocalDateTime createdAt = LocalDateTime.now();
+        
+        public Builder(String orderId, String userId) {
+            this.orderId = orderId;
+            this.userId = userId;
+        }
+        
+        public Builder addItem(OrderItem item) {
+            this.items.add(item);
+            return this;
+        }
+        
+        public Builder withStatus(OrderStatus status) {
+            this.status = status;
+            return this;
+        }
+        
+        public Order build() {
+            this.totalAmount = items.stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            return new Order(this);
+        }
+    }
+    
+    // All getters, no setters - immutable
+    public String getOrderId() { return orderId; }
+    public String getUserId() { return userId; }
+    public List&lt;OrderItem&gt; getItems() { return items; }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>4. Exception Handling & Error Recovery</h3>
+                <ul class="points">
+                    <li><span class="highlight">Custom Exceptions:</span> Create domain-specific exceptions for clarity (PaymentException, ValidationException)</li>
+                    <li><span class="highlight">Exception Hierarchy:</span> Checked for recoverable errors, unchecked for programming errors</li>
+                    <li><span class="highlight">Graceful Degradation:</span> Handle failures appropriately without propagating all exceptions</li>
+                    <li><span class="highlight">Logging with Context:</span> Log exceptions with relevant context for debugging</li>
+                    <li><span class="highlight">Retry Logic:</span> Implement exponential backoff for transient failures</li>
+                </ul>
+
+                <h4>Exception Hierarchy Example:</h4>
+                <pre><code class="language-java">// Custom exception hierarchy
+public abstract class DomainException extends RuntimeException {
+    protected DomainException(String message) { super(message); }
+    protected DomainException(String message, Throwable cause) { super(message, cause); }
+}
+
+public class PaymentException extends DomainException {
+    private final PaymentErrorCode errorCode;
+    public PaymentException(String message, PaymentErrorCode code) {
+        super(message);
+        this.errorCode = code;
+    }
+}
+
+// Retry with exponential backoff
+public class RetryablePaymentProcessor {
+    private static final int MAX_RETRIES = 3;
+    private static final long INITIAL_DELAY = 1000;
+    
+    public PaymentResult processWithRetry(PaymentRequest request) {
+        long delay = INITIAL_DELAY;
+        
+        for (int attempt = 1; attempt &lt;= MAX_RETRIES; attempt++) {
+            try {
+                return process(request);
+            } catch (TransientPaymentException e) {
+                if (attempt == MAX_RETRIES) {
+                    throw new PaymentException("Max retries exceeded", 
+                        PaymentErrorCode.MAX_RETRIES_EXCEEDED);
+                }
+                try {
+                    Thread.sleep(delay);
+                    delay *= 2; // Exponential backoff
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new PaymentException("Retry interrupted", 
+                        PaymentErrorCode.RETRY_INTERRUPTED);
+                }
+            }
+        }
+        throw new PaymentException("Unexpected state", PaymentErrorCode.INTERNAL_ERROR);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>5. Testing & Test-Driven Design</h3>
+                <ul class="points">
+                    <li><span class="highlight">Unit Testing:</span> Test classes in isolation with mocks for dependencies</li>
+                    <li><span class="highlight">Test Doubles:</span> Mock (verify behavior), Stub (provide data), Spy (partial mock)</li>
+                    <li><span class="highlight">BDD Structure:</span> Given-When-Then for readable test cases</li>
+                    <li><span class="highlight">Coverage Goals:</span> 80%+ coverage; focus on critical business logic</li>
+                    <li><span class="highlight">Integration Tests:</span> Test actual service integrations beyond unit level</li>
+                </ul>
+
+                <h4>Unit Test with Mocks:</h4>
+                <pre><code class="language-java">public class OrderServiceTest {
+    private OrderService orderService;
+    private PaymentProcessor paymentProcessor;
+    private OrderRepository orderRepository;
+    
+    @Before
+    public void setUp() {
+        paymentProcessor = mock(PaymentProcessor.class);
+        orderRepository = mock(OrderRepository.class);
+        orderService = new OrderService(paymentProcessor, orderRepository);
+    }
+    
+    @Test
+    public void shouldCreateOrderWhenPaymentSucceeds() {
+        // Given
+        PaymentRequest request = new PaymentRequest("user123", BigDecimal.valueOf(100));
+        when(paymentProcessor.process(request))
+            .thenReturn(new PaymentResult(PaymentStatus.SUCCESS));
+        
+        // When
+        Order order = orderService.createOrder(request);
+        
+        // Then
+        assertNotNull(order);
+        assertEquals(OrderStatus.CONFIRMED, order.getStatus());
+        verify(orderRepository).save(order);
+    }
+    
+    @Test
+    public void shouldNotCreateOrderWhenPaymentFails() {
+        // Given
+        PaymentRequest request = new PaymentRequest("user123", BigDecimal.valueOf(100));
+        when(paymentProcessor.process(request))
+            .thenThrow(new PaymentException("Payment declined", 
+                PaymentErrorCode.INSUFFICIENT_FUNDS));
+        
+        // When & Then
+        assertThrows(PaymentException.class, () -> {
+            orderService.createOrder(request);
+        });
+        verify(orderRepository, never()).save(any());
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== HLD SECTION ==================== -->
+        <section id="hld">
+            <h2>High-Level Design (HLD)</h2>
+            <p>Focuses on system architecture, component interactions, scalability, and reliability at macro level.</p>
+
+            <div class="card">
+                <h3>1. System Architecture Layers</h3>
+                <ul class="points">
+                    <li><span class="highlight">Presentation Layer:</span> User interfaces (Web, Mobile) - handles display and user input</li>
+                    <li><span class="highlight">API Gateway:</span> Single entry point - routing, rate limiting, authentication, request translation</li>
+                    <li><span class="highlight">Business Logic Layer:</span> Microservices - independent, deployable services with clear boundaries</li>
+                    <li><span class="highlight">Data Access Layer:</span> Repositories, DAOs - abstract database interactions</li>
+                    <li><span class="highlight">Data Layer:</span> Databases, caches, distributed stores - persistent data storage</li>
+                </ul>
+
+                <h4>System Architecture Diagram:</h4>
+                <div class="diagram">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Client["Client Layer"]
+                            WEB["Web"]
+                            MOBILE["Mobile"]
+                        end
+                        
+                        subgraph Edge["Edge/CDN"]
+                            CDN["CloudFlare CDN"]
+                        end
+                        
+                        subgraph Gateway["API Gateway"]
+                            LB["Load Balancer"]
+                            APIGW["API Gateway<br/>Auth, Rate Limit, Route"]
+                        end
+                        
+                        subgraph Services["Microservices"]
+                            ORDER["Order Service"]
+                            PAYMENT["Payment Service"]
+                            USER["User Service"]
+                            NOTIFY["Notification Service"]
+                        end
+                        
+                        subgraph Data["Data Layer"]
+                            SQL[("PostgreSQL<br/>Orders")]
+                            NOSQL[("MongoDB<br/>User Prefs")]
+                            CACHE["Redis Cache"]
+                            SEARCH[("Elasticsearch")]
+                        end
+                        
+                        subgraph Messaging["Message Queue"]
+                            KAFKA["Kafka<br/>Events"]
+                        end
+                        
+                        WEB --> CDN
+                        MOBILE --> CDN
+                        CDN --> LB
+                        LB --> APIGW
+                        APIGW --> ORDER
+                        APIGW --> PAYMENT
+                        APIGW --> USER
+                        ORDER --> SQL
+                        PAYMENT --> SQL
+                        USER --> NOSQL
+                        USER --> CACHE
+                        ORDER --> KAFKA
+                        KAFKA --> NOTIFY
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2. Database Design & Sharding</h3>
+                <ul class="points">
+                    <li><span class="highlight">Database Selection:</span> SQL (ACID, transactions), NoSQL (scale, flexibility), NewSQL (both)</li>
+                    <li><span class="highlight">Vertical Sharding:</span> Different entities in different databases (User DB, Order DB, Payment DB)</li>
+                    <li><span class="highlight">Horizontal Sharding:</span> Same entity split by key (shard orders by user_id or date range)</li>
+                    <li><span class="highlight">Replication:</span> Master-Slave (reads from replicas), Master-Master (active-active), or Raft consensus</li>
+                    <li><span class="highlight">Backup Strategy:</span> Point-in-time recovery, incremental backups, geo-distributed redundancy</li>
+                </ul>
+
+                <h4>Consistent Hashing for Sharding:</h4>
+                <div class="diagram">
+                    <div class="mermaid">
+                        graph LR
+                        APP["Application"]
+                        ROUTER["Consistent Hash<br/>Router"]
+                        SHARD1["Shard 1<br/>user_id: 0-999"]
+                        SHARD2["Shard 2<br/>user_id: 1000-1999"]
+                        SHARD3["Shard 3<br/>user_id: 2000-2999"]
+                        
+                        APP --> ROUTER
+                        ROUTER --> SHARD1
+                        ROUTER --> SHARD2
+                        ROUTER --> SHARD3
+                    </div>
+                </div>
+
+                <h4>Sharding Implementation:</h4>
+                <pre><code class="language-java">// Consistent Hash Sharding
+public class ShardingRouter {
+    private final TreeMap&lt;Integer, String&gt; ring = new TreeMap&lt;&gt;();
+    private final int replicationFactor = 3;
+    
+    public ShardingRouter(List&lt;String&gt; shardNodes) {
+        for (String node : shardNodes) {
+            for (int i = 0; i &lt; replicationFactor; i++) {
+                int hash = hashFunction(node + "#" + i);
+                ring.put(hash, node);
+            }
+        }
+    }
+    
+    public String getShardForKey(String key) {
+        if (ring.isEmpty()) return null;
+        int hash = hashFunction(key);
+        SortedMap&lt;Integer, String&gt; tailMap = ring.tailMap(hash);
+        return tailMap.isEmpty() ? ring.firstEntry().getValue() : tailMap.get(tailMap.firstKey());
+    }
+    
+    private int hashFunction(String key) {
+        return key.hashCode();
+    }
+}
+
+public class UserRepository {
+    private final Map&lt;String, Database&gt; shards;
+    private final ShardingRouter router;
+    
+    public void saveUser(User user) {
+        String shardId = router.getShardForKey(user.getId());
+        Database shard = shards.get(shardId);
+        shard.insert("users", user);
+    }
+    
+    public User getUser(String userId) {
+        String shardId = router.getShardForKey(userId);
+        return shards.get(shardId).query("users", userId);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>3. Caching Strategies</h3>
+                <ul class="points">
+                    <li><span class="highlight">L1 Cache:</span> In-application memory (HashMap, ConcurrentHashMap) - fastest, limited size</li>
+                    <li><span class="highlight">L2 Cache:</span> Local Redis instance - fast, process-specific</li>
+                    <li><span class="highlight">L3 Cache:</span> Distributed Redis cluster - shared across services</li>
+                    <li><span class="highlight">L4 Cache:</span> CDN - for static content delivery</li>
+                    <li><span class="highlight">Cache Invalidation Patterns:</span> TTL, Event-based, LRU/LFU eviction</li>
+                </ul>
+
+                <h4>Cache Patterns:</h4>
+                <ul class="points">
+                    <li><span class="highlight">Cache-Aside:</span> Check cache, miss → fetch DB → update cache (most common)</li>
+                    <li><span class="highlight">Write-Through:</span> Write to cache AND DB together (consistent but slower)</li>
+                    <li><span class="highlight">Write-Behind:</span> Write to cache immediately, async update DB (fast but risky)</li>
+                    <li><span class="highlight">Refresh-Ahead:</span> Proactively refresh before TTL expires</li>
+                </ul>
+
+                <h4>Cache-Aside Pattern:</h4>
+                <pre><code class="language-java">public class UserServiceWithCache {
+    private final UserRepository userRepository;
+    private final RedisCache cache;
+    private static final String CACHE_KEY_PREFIX = "user:";
+    private static final long CACHE_TTL_SECONDS = 3600;
+    
+    public User getUser(String userId) {
+        // Step 1: Check cache
+        String cacheKey = CACHE_KEY_PREFIX + userId;
+        User cachedUser = cache.get(cacheKey, User.class);
+        if (cachedUser != null) return cachedUser;
+        
+        // Step 2: Cache miss - fetch from DB
+        User user = userRepository.findById(userId);
+        
+        // Step 3: Update cache
+        if (user != null) {
+            cache.set(cacheKey, user, CACHE_TTL_SECONDS);
+        }
+        return user;
+    }
+    
+    public void updateUser(User user) {
+        userRepository.update(user);
+        
+        // Invalidate cache
+        cache.delete(CACHE_KEY_PREFIX + user.getId());
+    }
+    
+    // Warm cache for performance
+    public void warmCache(List&lt;String&gt; userIds) {
+        for (String userId : userIds) {
+            if (!cache.exists(CACHE_KEY_PREFIX + userId)) {
+                User user = userRepository.findById(userId);
+                if (user != null) {
+                    cache.set(CACHE_KEY_PREFIX + userId, user, CACHE_TTL_SECONDS);
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>4. Message Queuing & Async Processing</h3>
+                <ul class="points">
+                    <li><span class="highlight">Event-Driven Architecture:</span> Decouple producers and consumers using message queues</li>
+                    <li><span class="highlight">Asynchronous Processing:</span> Non-blocking request handling via background workers</li>
+                    <li><span class="highlight">Event Sourcing:</span> Store all changes as immutable events; replay to rebuild state</li>
+                    <li><span class="highlight">Message Ordering:</span> Ensure messages for same entity processed in order (partition by key)</li>
+                    <li><span class="highlight">Idempotency:</span> Design handlers to safely handle duplicate messages</li>
+                    <li><span class="highlight">Dead Letter Queue:</span> Route failed messages for manual inspection</li>
+                </ul>
+
+                <h4>Event-Driven Flow:</h4>
+                <div class="diagram">
+                    <div class="mermaid">
+                        graph LR
+                        ORDER["Order Service<br/>Creates Order"]
+                        KAFKA["Kafka<br/>order-events"]
+                        PAYMENT["Payment Service"]
+                        INVENTORY["Inventory Service"]
+                        NOTIFY["Notification Service"]
+                        DLQ["Dead Letter Queue"]
+                        
+                        ORDER -->|OrderCreated| KAFKA
+                        KAFKA --> PAYMENT
+                        KAFKA --> INVENTORY
+                        KAFKA --> NOTIFY
+                        PAYMENT -->|Failed| DLQ
+                    </div>
+                </div>
+
+                <h4>Event Processing with Idempotency:</h4>
+                <pre><code class="language-java">public interface OrderEvent {
+    String getOrderId();
+    LocalDateTime getTimestamp();
+}
+
+public class OrderCreatedEvent implements OrderEvent {
+    private final String orderId;
+    private final String userId;
+    private final BigDecimal amount;
+    private final LocalDateTime timestamp;
+    
+    public OrderCreatedEvent(String orderId, String userId, BigDecimal amount) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.amount = amount;
+        this.timestamp = LocalDateTime.now();
+    }
+    
+    @Override
+    public String getOrderId() { return orderId; }
+    @Override
+    public LocalDateTime getTimestamp() { return timestamp; }
+}
+
+public class PaymentEventConsumer {
+    private final PaymentService paymentService;
+    private final ProcessedEventStore processedEvents;
+    
+    public void handleOrderCreatedEvent(OrderCreatedEvent event) {
+        // Idempotency: Check if already processed
+        if (processedEvents.exists(event.getOrderId())) {
+            return; // Skip duplicate
+        }
+        
+        try {
+            paymentService.processPayment(
+                event.getOrderId(),
+                event.getUserId(),
+                event.getAmount()
+            );
+            
+            // Mark as processed
+            processedEvents.mark(event.getOrderId());
+        } catch (Exception e) {
+            // Publish to DLQ for manual inspection
+            throw new ProcessingException("Payment failed", e);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>5. Observability - Monitoring & Logging</h3>
+                <ul class="points">
+                    <li><span class="highlight">Distributed Tracing:</span> Track requests across services using trace IDs and spans</li>
+                    <li><span class="highlight">Structured Logging:</span> Log in JSON format with context (userId, requestId, timestamp)</li>
+                    <li><span class="highlight">Metrics Collection:</span> Latency, throughput, error rate, resource utilization (Prometheus)</li>
+                    <li><span class="highlight">Alerting & SLOs:</span> Set SLOs (99.9% uptime), alert on violations, dashboard tracking</li>
+                    <li><span class="highlight">Log Aggregation:</span> Centralize logs with ELK, Splunk, or Datadog for searchability</li>
+                </ul>
+
+                <h4>Structured Logging:</h4>
+                <pre><code class="language-java">public class OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+    
+    public Order createOrder(OrderRequest request) {
+        String orderId = UUID.randomUUID().toString();
+        String userId = request.getUserId();
+        
+        try {
+            logger.info("Creating order", Map.of(
+                "orderId", orderId,
+                "userId", userId,
+                "amount", request.getAmount(),
+                "timestamp", LocalDateTime.now()
+            ));
+            
+            Order order = new Order(orderId, request);
+            
+            logger.info("Order created successfully", Map.of(
+                "orderId", orderId,
+                "status", order.getStatus()
+            ));
+            
+            return order;
+        } catch (Exception e) {
+            logger.error("Order creation failed", Map.of(
+                "orderId", orderId,
+                "userId", userId,
+                "error", e.getMessage()
+            ));
+            throw e;
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== SOLID SECTION ==================== -->
+        <section id="solid">
+            <h2>SOLID Principles</h2>
+            <p>Five design principles for maintainable, flexible, and scalable code.</p>
+
+            <div class="card">
+                <h3>1. Single Responsibility Principle (SRP)</h3>
+                <p><strong class="highlight">A class should have only one reason to change.</strong></p>
+                <ul class="points">
+                    <li>Each class has ONE well-defined responsibility</li>
+                    <li>High cohesion within the class</li>
+                    <li>Easier to test, reuse, and maintain</li>
+                    <li>Avoid "God Classes" that do too many things</li>
+                    <li>When requirements change, only related classes need updates</li>
+                </ul>
+
+                <h4>Bad Example - Violates SRP:</h4>
+                <pre><code class="language-java">// BAD: This class has multiple responsibilities
+public class UserService {
+    public void createUser(User user) { /* database operation */ }
+    public void sendWelcomeEmail(User user) { /* email operation */ }
+    public void logUserAction(String userId, String action) { /* logging */ }
+    public boolean validateUser(User user) { /* validation */ }
+}</code></pre>
+
+                <h4>Good Example - Follows SRP:</h4>
+                <pre><code class="language-java">// GOOD: Separate concerns into different classes
+public class UserService {
+    private final UserRepository repository;
+    private final EmailService emailService;
+    private final UserValidator validator;
+    
+    public void createUser(User user) {
+        if (validator.isValid(user)) {
+            repository.save(user);
+            emailService.sendWelcomeEmail(user);
+        }
+    }
+}
+
+public class UserRepository {
+    public void save(User user) { }
+}
+
+public class EmailService {
+    public void sendWelcomeEmail(User user) { }
+}
+
+public class UserValidator {
+    public boolean isValid(User user) { }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>2. Open/Closed Principle (OCP)</h3>
+                <p><strong class="highlight">Classes should be open for extension but closed for modification.</strong></p>
+                <ul class="points">
+                    <li>Design classes so new features can be added without modifying existing code</li>
+                    <li>Use abstract classes, interfaces, and inheritance for extension</li>
+                    <li>Reduces risk of breaking existing functionality</li>
+                    <li>Enables plugin-based architectures</li>
+                    <li>Use Strategy, Template Method, or Decorator patterns</li>
+                </ul>
+
+                <h4>Bad Example - Violates OCP:</h4>
+                <pre><code class="language-java">// BAD: Adding new payment types requires modification
+public class PaymentProcessor {
+    public void processPayment(String type, PaymentDetails details) {
+        if ("CREDIT_CARD".equals(type)) {
+            processCreditCard(details);
+        } else if ("UPI".equals(type)) {
+            processUPI(details);
+        }
+        // Need to modify this class every time!
+    }
+}</code></pre>
+
+                <h4>Good Example - Follows OCP:</h4>
+                <pre><code class="language-java">// GOOD: Closed for modification, open for extension
+public interface PaymentGateway {
+    PaymentResult process(PaymentDetails details);
+}
+
+public class CreditCardGateway implements PaymentGateway {
+    @Override
+    public PaymentResult process(PaymentDetails details) { }
+}
+
+public class UPIGateway implements PaymentGateway {
+    @Override
+    public PaymentResult process(PaymentDetails details) { }
+}
+
+public class PaymentProcessor {
+    private final Map&lt;String, PaymentGateway&gt; gateways;
+    
+    public PaymentResult processPayment(String type, PaymentDetails details) {
+        return gateways.get(type).process(details);
+    }
+    
+    // Register new payment types without modifying this class!
+    public void registerGateway(String type, PaymentGateway gateway) {
+        gateways.put(type, gateway);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>3. Liskov Substitution Principle (LSP)</h3>
+                <p><strong class="highlight">Derived classes must be substitutable for their base classes.</strong></p>
+                <ul class="points">
+                    <li>If B extends A, we should be able to replace A with B without breaking the program</li>
+                    <li>Don't weaken preconditions or strengthen postconditions in subclasses</li>
+                    <li>Maintain the contract defined by the parent class</li>
+                    <li>Avoid behavioral changes in subclasses</li>
+                    <li>Use composition over inheritance when inheritance doesn't satisfy LSP</li>
+                </ul>
+
+                <h4>Bad Example - Violates LSP:</h4>
+                <pre><code class="language-java">// BAD: Square violates Rectangle contract
+public class Rectangle {
+    protected int width, height;
+    public void setWidth(int w) { this.width = w; }
+    public void setHeight(int h) { this.height = h; }
+    public int getArea() { return width * height; }
+}
+
+public class Square extends Rectangle {
+    @Override
+    public void setWidth(int w) {
+        this.width = w;
+        this.height = w; // Violates contract!
+    }
+}
+
+// This breaks with Square!
+void testRectangle(Rectangle rect) {
+    rect.setWidth(5);
+    rect.setHeight(4);
+    assert rect.getArea() == 20; // FAILS with Square!
+}</code></pre>
+
+                <h4>Good Example - Follows LSP:</h4>
+                <pre><code class="language-java">// GOOD: Don't force inheritance where it doesn't fit
+public abstract class Shape {
+    public abstract int getArea();
+}
+
+public class Rectangle extends Shape {
+    private int width, height;
+    public Rectangle(int w, int h) { this.width = w; this.height = h; }
+    public void setWidth(int w) { this.width = w; }
+    public void setHeight(int h) { this.height = h; }
+    @Override
+    public int getArea() { return width * height; }
+}
+
+public class Square extends Shape {
+    private int side;
+    public Square(int side) { this.side = side; }
+    public void setSide(int s) { this.side = s; }
+    @Override
+    public int getArea() { return side * side; }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>4. Interface Segregation Principle (ISP)</h3>
+                <p><strong class="highlight">Clients should not depend on interfaces they don't use.</strong></p>
+                <ul class="points">
+                    <li>Create specific, focused interfaces rather than large all-purpose ones</li>
+                    <li>Reduce coupling by depending only on needed methods</li>
+                    <li>Easier to mock for testing with small interfaces</li>
+                    <li>Prevents "fat interfaces" forcing unwanted implementations</li>
+                    <li>Multiple inheritance (multiple interfaces) more flexible than single base class</li>
+                </ul>
+
+                <h4>Bad Example - Violates ISP:</h4>
+                <pre><code class="language-java">// BAD: Fat interface - Robot must implement eat() and sleep()
+public interface Worker {
+    void work();
+    void eat();
+    void sleep();
+}
+
+public class Robot implements Worker {
+    public void work() { }
+    public void eat() { throw new UnsupportedOperationException(); }
+    public void sleep() { throw new UnsupportedOperationException(); }
+}</code></pre>
+
+                <h4>Good Example - Follows ISP:</h4>
+                <pre><code class="language-java">// GOOD: Segregate into focused interfaces
+public interface Workable {
+    void work();
+}
+
+public interface Eatable {
+    void eat();
+}
+
+public interface Sleepable {
+    void sleep();
+}
+
+public class Human implements Workable, Eatable, Sleepable { }
+public class Robot implements Workable { }
+
+public class WorkManager {
+    public void manageWorkers(List&lt;Workable&gt; workers) {
+        for (Workable w : workers) w.work();
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>5. Dependency Inversion Principle (DIP)</h3>
+                <p><strong class="highlight">High-level modules should not depend on low-level modules. Both should depend on abstractions.</strong></p>
+                <ul class="points">
+                    <li>Depend on interfaces/abstractions, not concrete implementations</li>
+                    <li>High-level code shouldn't know implementation details</li>
+                    <li>Enables flexibility - swap implementations easily</li>
+                    <li>Supports testing with mock implementations</li>
+                    <li>Use dependency injection to provide dependencies</li>
+                </ul>
+
+                <h4>Bad Example - Violates DIP:</h4>
+                <pre><code class="language-java">// BAD: Tight coupling to concrete class
+public class OrderService {
+    private MySQLDatabase database = new MySQLDatabase();
+    
+    public void createOrder(Order order) {
+        database.save(order.toString());
+    }
+}
+// Problem: Can't switch to MongoDB or PostgreSQL</code></pre>
+
+                <h4>Good Example - Follows DIP:</h4>
+                <pre><code class="language-java">// GOOD: Depend on abstraction
+public interface Database {
+    void save(String data);
+}
+
+public class MySQLDatabase implements Database {
+    public void save(String data) { }
+}
+
+public class OrderService {
+    private final Database database; // Interface, not concrete
+    
+    public OrderService(Database database) {
+        this.database = database;
+    }
+    
+    public void createOrder(Order order) {
+        database.save(order.toString());
+    }
+}
+
+// Easy to swap implementations
+Database db = new MySQLDatabase();
+OrderService service = new OrderService(db);</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== CAP THEOREM SECTION ==================== -->
+        <section id="cap">
+            <h2>CAP Theorem</h2>
+            <p>A distributed system can guarantee at most TWO of three properties: Consistency, Availability, Partition Tolerance.</p>
+
+            <div class="card">
+                <h3>Understanding CAP Properties</h3>
+                <ul class="points">
+                    <li><span class="highlight">Consistency (C):</span> Every read returns the most recent write; all nodes see same data</li>
+                    <li><span class="highlight">Availability (A):</span> Every request gets response; system remains operational even if nodes down</li>
+                    <li><span class="highlight">Partition Tolerance (P):</span> System continues operation despite network partitions</li>
+                    <li><span class="highlight">The Trade-off:</span> During network partition, MUST choose between C and A</li>
+                    <li><span class="highlight">2026 Perspective:</span> NewSQL databases achieve "2.5" properties using eventual consistency</li>
+                </ul>
+
+                <h4>CAP Theorem Visualization:</h4>
+                <div class="diagram">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph CAP["CAP Theorem"]
+                            C["Consistency<br/>Latest Data"]
+                            A["Availability<br/>Always Up"]
+                            P["Partition Tolerance<br/>Network Splits"]
+                        end
+                        
+                        CA["CA: Single Region<br/>PostgreSQL, MySQL"]
+                        CP["CP: Consistent<br/>MongoDB, Redis"]
+                        AP["AP: Available<br/>Cassandra, DynamoDB"]
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Consistency</th>
+                            <th>Availability</th>
+                            <th>Partition Tolerance</th>
+                            <th>Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CA</strong></td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>✗</td>
+                            <td>PostgreSQL, MySQL (single datacenter)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CP</strong></td>
+                            <td>✓</td>
+                            <td>✗</td>
+                            <td>✓</td>
+                            <td>MongoDB, Redis, HBase</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AP</strong></td>
+                            <td>✗</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                            <td>Cassandra, DynamoDB, Riak</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>1. CA Systems - Consistency + Availability</h3>
+                <ul class="points">
+                    <li>Trade-off: Cannot tolerate network partitions; requires all nodes connected</li>
+                    <li>Best for: Single datacenter, internal systems, ACID transactions critical</li>
+                    <li>Examples: PostgreSQL, MySQL, Oracle (single region)</li>
+                    <li>Approach: Synchronous replication, fail if partition occurs</li>
+                    <li>Modern use: Stretch cluster across zones with low latency</li>
+                </ul>
+
+                <h4>CA Implementation - PostgreSQL:</h4>
+                <pre><code class="language-java">// CA System - Synchronous Replication (Fast, Consistent)
+public class ConsistentOrderService {
+    private final JdbcTemplate jdbcTemplate;
+    
+    public void createOrder(Order order) {
+        // Synchronous replication - waits for replica acknowledgment
+        try {
+            jdbcTemplate.update(
+                "INSERT INTO orders (id, user_id, amount) VALUES (?, ?, ?)",
+                order.getId(),
+                order.getUserId(),
+                order.getAmount()
+            );
+            // Returns only after all replicas acknowledged
+        } catch (DataAccessException e) {
+            // Partition or replica failure
+            throw new OrderProcessingException("Failed to create order", e);
+        }
+    }
+    
+    public Order getOrder(String orderId) {
+        // Always reads from primary - guarantees latest data
+        return jdbcTemplate.queryForObject(
+            "SELECT * FROM orders WHERE id = ?",
+            new OrderRowMapper(),
+            orderId
+        );
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>2. CP Systems - Consistency + Partition Tolerance</h3>
+                <ul class="points">
+                    <li>Trade-off: Sacrifices Availability; blocks requests during partition</li>
+                    <li>Best for: Financial systems, inventory, correctness critical</li>
+                    <li>Examples: MongoDB (majority writes), Redis Cluster, HBase</li>
+                    <li>Approach: Quorum writes, consensus algorithms (Raft, Paxos)</li>
+                    <li>Pattern: Requires majority acknowledgment for writes</li>
+                </ul>
+
+                <h4>CP Implementation - MongoDB:</h4>
+                <pre><code class="language-java">// CP System - Majority Write Concern (Consistent across partitions)
+public class ConsistentInventoryService {
+    private final MongoTemplate mongoTemplate;
+    
+    public void decrementStock(String productId, int quantity) {
+        // Majority write concern - requires acknowledgment from majority
+        WriteConcern writeConcern = WriteConcern.MAJORITY.withWTimeout(5, TimeUnit.SECONDS);
+        
+        try {
+            Query query = Query.query(Criteria.where("productId").is(productId));
+            Update update = new Update().inc("quantity", -quantity);
+            
+            mongoTemplate.updateFirst(query, update, Product.class);
+            
+            // Only returns after majority acknowledged - survives minority failures
+        } catch (MongoWriteConcernException e) {
+            // Partition detected - cannot achieve majority
+            throw new PartitionException("Cannot process write during partition", e);
+        }
+    }
+    
+    public int getStock(String productId) {
+        // Read from primary only - may fail if primary isolated
+        Product product = mongoTemplate.findById(productId, Product.class);
+        return product != null ? product.getQuantity() : 0;
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>3. AP Systems - Availability + Partition Tolerance</h3>
+                <ul class="points">
+                    <li>Trade-off: Eventual consistency; temporary data inconsistency</li>
+                    <li>Best for: Social media, recommendations, user preferences</li>
+                    <li>Examples: Cassandra, DynamoDB, CouchDB, Riak</li>
+                    <li>Approach: Asynchronous replication, always responsive</li>
+                    <li>Pattern: Last-write-wins, conflict resolution, read repair, anti-entropy</li>
+                </ul>
+
+                <h4>AP Implementation - Cassandra:</h4>
+                <pre><code class="language-java">// AP System - Eventual Consistency (Always available, eventually consistent)
+public class AvailableUserPreferenceService {
+    private final CassandraTemplate cassandraTemplate;
+    
+    public void updateUserTheme(String userId, String theme) {
+        // Asynchronous replication - returns immediately
+        // Data will propagate to other nodes eventually
+        
+        UserPreference preference = new UserPreference();
+        preference.setUserId(userId);
+        preference.setTheme(theme);
+        preference.setTimestamp(System.currentTimeMillis());
+        
+        cassandraTemplate.insert(preference);
+        // Returns immediately - eventually consistent across cluster
+    }
+    
+    public String getUserTheme(String userId) {
+        // Read may return stale data
+        UserPreference pref = cassandraTemplate.selectOneById(userId, UserPreference.class);
+        return pref != null ? pref.getTheme() : "DEFAULT";
+    }
+    
+    // Background anti-entropy repair
+    @Scheduled(fixedDelay = 3600000) // Every hour
+    public void performAntiEntropyRepair() {
+        // Scan all data and reconcile differences
+        // Eventually brings all replicas to consistency
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>4. PACELC Theorem - Real-World Trade-offs (2026+)</h3>
+                <ul class="points">
+                    <li><span class="highlight">PACELC:</span> If (P)artition, choose (A)vailability or (C)onsistency; Else choose (L)atency or (C)onsistency</li>
+                    <li><span class="highlight">During Normal Operation:</span> Trade-off between latency and consistency</li>
+                    <li><span class="highlight">Hybrid Approaches:</span> Different components handle differently (orders CP, recommendations AP)</li>
+                    <li><span class="highlight">Strong Eventual Consistency:</span> Read-your-write consistency, causal consistency guarantees</li>
+                    <li><span class="highlight">NewSQL Solutions:</span> CockroachDB, Spanner, Vitess - try to get "2.5" properties</li>
+                </ul>
+
+                <h4>Hybrid CAP Strategy:</h4>
+                <pre><code class="language-java">// PACELC - Choose between latency and consistency based on use case
+public class HybridOrderService {
+    private final ConsistentDatabase consistentDB; // PostgreSQL - CP
+    private final AvailableCache availableCache;   // Redis - AP
+    
+    // For critical operations - prioritize consistency over latency
+    public void createOrder(Order order) {
+        // CP: Consistent and partition-tolerant
+        consistentDB.save(order);
+    }
+    
+    // For reading - trade consistency for latency
+    public List&lt;Order&gt; getUserOrders(String userId) {
+        // Try cache first (available, potentially stale)
+        List&lt;Order&gt; cached = availableCache.getOrders(userId);
+        if (cached != null) return cached;
+        
+        // Cache miss - read from consistent source
+        List&lt;Order&gt; orders = consistentDB.getOrders(userId);
+        availableCache.setOrders(userId, orders, 3600);
+        
+        return orders;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== DESIGN PATTERNS SECTION ==================== -->
+        <section id="patterns">
+            <h2>Design Patterns (Creational, Structural, Behavioral)</h2>
+            <p>Reusable solutions to common design problems in software development.</p>
+
+            <div class="card">
+                <h3>Creational Patterns - Object Creation</h3>
+
+                <h4>1. Singleton Pattern</h4>
+                <ul class="points">
+                    <li>Ensures ONE instance of a class throughout application lifetime</li>
+                    <li>Use cases: Database connection pool, Logger, Configuration manager</li>
+                    <li>Thread-safe: Bill Pugh Singleton pattern (class loader guarantees thread safety)</li>
+                    <li>Downside: Hides dependencies, makes testing harder</li>
+                    <li>Modern alternative: Dependency injection (Spring @Singleton)</li>
+                </ul>
+
+                <h4>2. Factory Pattern</h4>
+                <ul class="points">
+                    <li>Creates objects without specifying exact classes</li>
+                    <li>Use cases: PaymentGatewayFactory creates different payment processors</li>
+                    <li>Encapsulates object creation logic</li>
+                    <li>Simple Factory vs Factory Method vs Abstract Factory</li>
+                </ul>
+
+                <h4>3. Builder Pattern</h4>
+                <ul class="points">
+                    <li>Constructs complex objects step-by-step</li>
+                    <li>Best for objects with many optional parameters</li>
+                    <li>Improves readability of construction code</li>
+                    <li>Fluent interface for chaining method calls</li>
+                </ul>
+
+                <h4>Code Examples:</h4>
+                <pre><code class="language-java">// Bill Pugh Singleton
+public class DatabaseConnection {
+    private DatabaseConnection() { }
+    
+    public static DatabaseConnection getInstance() {
+        return SingletonHelper.instance;
+    }
+    
+    private static class SingletonHelper {
+        private static final DatabaseConnection instance = new DatabaseConnection();
+    }
+}
+
+// Factory Pattern
+public class PaymentGatewayFactory {
+    public static PaymentGateway createGateway(PaymentType type) {
+        return switch (type) {
+            case CREDIT_CARD -> new CreditCardGateway();
+            case UPI -> new UPIGateway();
+            case WALLET -> new WalletGateway();
+            default -> throw new IllegalArgumentException("Unknown type: " + type);
+        };
+    }
+}
+
+// Builder Pattern
+public class OrderBuilder {
+    private String orderId;
+    private String userId;
+    private List&lt;Item&gt; items = new ArrayList&lt;&gt;();
+    private BigDecimal amount;
+    
+    public OrderBuilder(String orderId) {
+        this.orderId = orderId;
+    }
+    
+    public OrderBuilder forUser(String userId) {
+        this.userId = userId;
+        return this;
+    }
+    
+    public OrderBuilder addItem(Item item) {
+        this.items.add(item);
+        return this;
+    }
+    
+    public Order build() {
+        return new Order(orderId, userId, items);
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Structural Patterns - Object Composition</h3>
+
+                <h4>1. Adapter Pattern</h4>
+                <ul class="points">
+                    <li>Converts interface of a class to another interface clients expect</li>
+                    <li>Use cases: Integrating legacy systems, third-party APIs with different interfaces</li>
+                    <li>Example: StripePaymentAdapter makes Stripe API compatible with PaymentGateway interface</li>
+                </ul>
+
+                <h4>2. Decorator Pattern</h4>
+                <ul class="points">
+                    <li>Adds new functionality to object dynamically without modifying original</li>
+                    <li>Use cases: Adding logging, caching, validation to methods</li>
+                    <li>More flexible than inheritance</li>
+                    <li>Example: CachedPaymentGateway wraps PaymentGateway with caching logic</li>
+                </ul>
+
+                <h4>3. Facade Pattern</h4>
+                <ul class="points">
+                    <li>Provides simplified interface to complex subsystem</li>
+                    <li>Use cases: Order processing coordinating payment, inventory, notification</li>
+                    <li>Reduces coupling between client and subsystem</li>
+                    <li>Single entry point to multiple services</li>
+                </ul>
+
+                <h4>Code Examples:</h4>
+                <pre><code class="language-java">// Adapter Pattern
+public interface PaymentGateway {
+    PaymentResult process(PaymentDetails details);
+}
+
+public class StripePaymentAPI {
+    public StripePaymentResult processCharge(StripeChargeRequest request) { }
+}
+
+public class StripePaymentAdapter implements PaymentGateway {
+    private final StripePaymentAPI stripeAPI;
+    
+    @Override
+    public PaymentResult process(PaymentDetails details) {
+        StripeChargeRequest req = new StripeChargeRequest(
+            details.getAmount(),
+            details.getCardToken()
+        );
+        StripePaymentResult result = stripeAPI.processCharge(req);
+        return new PaymentResult(result.isSuccess(), result.getTransactionId());
+    }
+}
+
+// Decorator Pattern
+public class CachedPaymentGateway implements PaymentGateway {
+    private final PaymentGateway delegate;
+    private final Cache cache;
+    
+    @Override
+    public PaymentResult process(PaymentDetails details) {
+        String key = generateCacheKey(details);
+        PaymentResult cached = cache.get(key, PaymentResult.class);
+        if (cached != null) return cached;
+        
+        PaymentResult result = delegate.process(details);
+        cache.put(key, result, 3600);
+        return result;
+    }
+}
+
+// Facade Pattern
+public class OrderProcessingFacade {
+    private final PaymentGateway paymentGateway;
+    private final InventoryService inventoryService;
+    private final NotificationService notificationService;
+    
+    public OrderResult processOrder(Order order) {
+        PaymentResult payment = paymentGateway.process(order.getPaymentDetails());
+        if (!payment.isSuccess()) return new OrderResult(false, "Payment failed");
+        
+        if (!inventoryService.reserve(order.getItems())) {
+            paymentGateway.refund(payment.getTransactionId());
+            return new OrderResult(false, "Inventory unavailable");
+        }
+        
+        notificationService.sendOrderConfirmation(order);
+        return new OrderResult(true, "Order processed");
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Behavioral Patterns - Object Interaction</h3>
+
+                <h4>1. Observer Pattern</h4>
+                <ul class="points">
+                    <li>One-to-many dependency: when one changes, all dependents notified</li>
+                    <li>Use cases: Event systems, pub-sub messaging, MVC pattern</li>
+                    <li>Example: Order status changes notify EmailService, SMSService, LogService</li>
+                </ul>
+
+                <h4>2. Strategy Pattern</h4>
+                <ul class="points">
+                    <li>Family of algorithms, encapsulates each one, makes them interchangeable</li>
+                    <li>Use cases: Different discount strategies, payment methods, sorting algorithms</li>
+                    <li>Runtime algorithm selection based on context</li>
+                </ul>
+
+                <h4>3. State Pattern</h4>
+                <ul class="points">
+                    <li>Object alters behavior when internal state changes</li>
+                    <li>Use cases: Order workflow (Pending → Confirmed → Shipped → Delivered)</li>
+                    <li>Each state handles its own transitions and behaviors</li>
+                </ul>
+
+                <h4>4. Template Method Pattern</h4>
+                <ul class="points">
+                    <li>Define algorithm skeleton in base class, subclasses implement specific steps</li>
+                    <li>Use cases: Different payment processing flows with common steps</li>
+                    <li>Prevents code duplication of common workflow</li>
+                </ul>
+
+                <h4>Code Examples:</h4>
+                <pre><code class="language-java">// Observer Pattern
+public interface OrderObserver {
+    void onOrderStatusChanged(Order order);
+}
+
+public class OrderService {
+    private List&lt;OrderObserver&gt; observers = new ArrayList&lt;&gt;();
+    
+    public void updateOrderStatus(Order order, OrderStatus status) {
+        order.setStatus(status);
+        for (OrderObserver observer : observers) {
+            observer.onOrderStatusChanged(order);
+        }
+    }
+}
+
+// Strategy Pattern
+public interface DiscountStrategy {
+    BigDecimal applyDiscount(BigDecimal amount);
+}
+
+public class Order {
+    private DiscountStrategy strategy;
+    
+    public BigDecimal getFinalPrice(BigDecimal basePrice) {
+        return strategy.applyDiscount(basePrice);
+    }
+}
+
+// State Pattern
+public interface OrderState {
+    void confirm(Order order);
+    void ship(Order order);
+}
+
+public class PendingOrderState implements OrderState {
+    public void confirm(Order order) {
+        order.setState(new ConfirmedOrderState());
+    }
+    
+    public void ship(Order order) {
+        throw new IllegalStateException("Cannot ship pending order");
+    }
+}
+
+// Template Method
+public abstract class PaymentProcessor {
+    public final void processPayment(PaymentRequest request) {
+        validate(request);
+        authenticate(request);
+        transact(request);
+        log(request);
+    }
+    
+    protected abstract void transact(PaymentRequest request);
+    protected void validate(PaymentRequest request) { }
+    protected void authenticate(PaymentRequest request) { }
+    protected void log(PaymentRequest request) { }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Architectural Patterns (2026+)</h3>
+
+                <h4>1. CQRS (Command Query Responsibility Segregation)</h4>
+                <ul class="points">
+                    <li>Separate read and write models for optimized scaling</li>
+                    <li>Commands modify state, Queries retrieve state</li>
+                    <li>Write model optimized for transactions, Read model for performance</li>
+                    <li>Use cases: Complex domains with different read/write patterns</li>
+                </ul>
+
+                <h4>2. Event Sourcing</h4>
+                <ul class="points">
+                    <li>Store all state changes as immutable events, rebuild state by replaying</li>
+                    <li>Complete audit trail of all changes</li>
+                    <li>Can replay events to any point in time</li>
+                    <li>Use cases: Financial systems, audit requirements, temporal queries</li>
+                </ul>
+
+                <h4>3. Saga Pattern</h4>
+                <ul class="points">
+                    <li>Manage long-running, multi-step transactions in microservices</li>
+                    <li>Choreography (event-driven) vs Orchestration (central coordinator)</li>
+                    <li>Implements compensating transactions for failure handling</li>
+                    <li>Use cases: Order processing across multiple services</li>
+                </ul>
+
+                <h4>4. Circuit Breaker</h4>
+                <ul class="points">
+                    <li>Prevent cascading failures by monitoring and failing fast</li>
+                    <li>States: Closed (normal), Open (failing), Half-Open (testing recovery)</li>
+                    <li>Use cases: External API calls, microservice communication</li>
+                </ul>
+
+                <h4>Code Examples:</h4>
+                <pre><code class="language-java">// CQRS Pattern
+public class OrderCommandService {
+    private final OrderRepository repository;
+    private final EventPublisher eventPublisher;
+    
+    public void createOrder(CreateOrderCommand cmd) {
+        Order order = new Order(cmd);
+        repository.save(order);
+        eventPublisher.publish(new OrderCreatedEvent(order));
+    }
+}
+
+public class OrderQueryService {
+    private final OrderReadRepository readRepository;
+    
+    public OrderDTO getOrderDetails(String orderId) {
+        return readRepository.findById(orderId);
+    }
+}
+
+// Circuit Breaker
+public class ResilientPaymentGateway {
+    private final CircuitBreaker breaker;
+    
+    public PaymentResult process(PaymentDetails details) {
+        try {
+            return breaker.execute(() -> delegate.process(details));
+        } catch (CircuitBreakerOpenException e) {
+            return new PaymentResult(false, "Service temporarily unavailable");
+        }
+    }
+}
+
+// Saga Pattern
+public class OrderSaga {
+    public void createOrder(Order order) {
+        Order created = orderService.create(order);
+        
+        try {
+            PaymentResult payment = paymentService.pay(created.getId(), created.getAmount());
+            if (!payment.isSuccess()) throw new PaymentException("Payment failed");
+            
+            boolean reserved = inventoryService.reserve(created.getItems());
+            if (!reserved) throw new InventoryException("Out of stock");
+            
+            orderService.confirm(created.getId());
+        } catch (Exception e) {
+            // Compensating transactions
+            paymentService.refund(created.getId());
+            inventoryService.release(created.getItems());
+            orderService.cancel(created.getId());
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ==================== COMPLETE CASE STUDY ==================== -->
+        <section id="case">
+            <h2>Complete Case Study: RideShare System (Uber-like Design)</h2>
+            <p>End-to-end system design covering all previously discussed concepts.</p>
+
+            <div class="card">
+                <h3>System Overview & Requirements</h3>
+                <ul class="points">
+                    <li><span class="highlight">Functional:</span> User registration, ride request, driver matching, location tracking, payment, ratings</li>
+                    <li><span class="highlight">Non-Functional:</span> < 100ms latency, 99.99% availability, 1M concurrent users, 100K ride requests/min</li>
+                    <li><span class="highlight">Scale:</span> 10M DAU, 500K concurrent users, multi-region support</li>
+                    <li><span class="highlight">Data:</span> User data, ride history, location streaming, payment records, real-time tracking</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Complete HLD Architecture</h3>
+                <div class="diagram">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Clients["Client Layer"]
+                            WEB["Web"]
+                            IOS["iOS"]
+                            AND["Android"]
+                        end
+                        
+                        subgraph Edge["CDN/Edge"]
+                            CDN["CloudFlare<br/>CDN"]
+                        end
+                        
+                        subgraph Gateway["API Layer"]
+                            LB["Load Balancer"]
+                            GW["API Gateway<br/>Auth, Rate Limit"]
+                        end
+                        
+                        subgraph Services["Microservices"]
+                            USER["User Service"]
+                            LOCATION["Location Service"]
+                            MATCHING["Matching Engine"]
+                            RIDE["Ride Service"]
+                            PAYMENT["Payment Service"]
+                            RATING["Rating Service"]
+                        end
+                        
+                        subgraph Data["Data Layer"]
+                            USERDB[("PostgreSQL<br/>Users")]
+                            RIDEDB[("PostgreSQL<br/>Rides")]
+                            TIMESERIES[("TimescaleDB<br/>Locations")]
+                            REDIS["Redis<br/>Cache &amp; Geohash"]
+                            ES[("Elasticsearch<br/>Analytics")]
+                        end
+                        
+                        subgraph Queue["Messaging"]
+                            KAFKA["Kafka<br/>Events"]
+                        end
+                        
+                        subgraph External["External"]
+                            MAPS["Google Maps"]
+                            STRIPE["Stripe"]
+                        end
+                        
+                        WEB --> CDN
+                        IOS --> CDN
+                        AND --> CDN
+                        CDN --> LB
+                        LB --> GW
+                        GW --> USER
+                        GW --> RIDE
+                        GW --> PAYMENT
+                        LOCATION -.->|Stream| MATCHING
+                        LOCATION --> REDIS
+                        LOCATION --> TIMESERIES
+                        MATCHING --> KAFKA
+                        RIDE --> KAFKA
+                        PAYMENT --> KAFKA
+                        KAFKA --> ES
+                        MATCHING --> MAPS
+                        PAYMENT --> STRIPE
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Component-Level Design</h3>
+
+                <h4>A. User Service (SRP + DIP)</h4>
+                <pre><code class="language-java">// User Domain Model
+public class User {
+    private final String userId;
+    private final String phoneNumber;
+    private final String email;
+    private final UserType userType; // RIDER, DRIVER
+    private final BigDecimal rating;
+    
+    public User(String userId, String phone, String email, UserType type) {
+        this.userId = userId;
+        this.phoneNumber = phone;
+        this.email = email;
+        this.userType = type;
+        this.rating = BigDecimal.valueOf(5.0);
+    }
+}
+
+// User Service with Dependency Injection
+public class UserService {
+    private final UserRepository repository;
+    private final EncryptionService encryptionService;
+    private final EmailService emailService;
+    
+    public UserService(UserRepository repo, EncryptionService enc, EmailService email) {
+        this.repository = repo;
+        this.encryptionService = enc;
+        this.emailService = email;
+    }
+    
+    public User registerUser(UserRegistrationRequest request) {
+        validateRequest(request);
+        
+        if (repository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new UserAlreadyExistsException("User already registered");
+        }
+        
+        User user = new User(
+            UUID.randomUUID().toString(),
+            request.getPhoneNumber(),
+            request.getEmail(),
+            request.getUserType()
+        );
+        
+        User saved = repository.save(user);
+        emailService.sendVerificationEmail(saved);
+        
+        return saved;
+    }
+    
+    public User getUser(String userId) {
+        return repository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+    
+    private void validateRequest(UserRegistrationRequest req) {
+        if (!req.getPhoneNumber().matches("\\d{10}")) {
+            throw new InvalidPhoneNumberException("Invalid phone");
+        }
+    }
+}</code></pre>
+
+                <h4>B. Location Service - Real-Time Tracking</h4>
+                <pre><code class="language-java">// Location Domain Model
+public class Location {
+    private final String userId;
+    private final double latitude;
+    private final double longitude;
+    private final LocalDateTime timestamp;
+    private final String geoHash; // For spatial indexing
+    
+    public Location(String userId, double lat, double lng) {
+        this.userId = userId;
+        this.latitude = lat;
+        this.longitude = lng;
+        this.timestamp = LocalDateTime.now();
+        this.geoHash = GeoHashUtil.encode(lat, lng, 8);
+    }
+}
+
+// Location Service - Real-time updates
+public class LocationService {
+    private final LocationRepository repository;
+    private final WebSocketManager websocketManager;
+    private final GeoHashIndex geoHashIndex;
+    private final LocationCache cache;
+    
+    public void updateLocation(String userId, double lat, double lng) {
+        Location location = new Location(userId, lat, lng);
+        
+        // Store in TimescaleDB (time-series optimized)
+        repository.save(location);
+        
+        // Update cache for quick access
+        cache.set(userId, location);
+        
+        // Update geohash index
+        geoHashIndex.add(location);
+        
+        // Broadcast via WebSocket
+        broadcastLocationUpdate(location);
+    }
+    
+    // Efficient nearby search using geohashing
+    public List&lt;String&gt; findNearbyDrivers(double lat, double lng, int radiusKm) {
+        String geoHash = GeoHashUtil.encode(lat, lng, 6);
+        List&lt;String&gt; neighbors = GeoHashUtil.getNeighbors(geoHash);
+        return geoHashIndex.getDriversInGeoHashes(neighbors);
+    }
+    
+    private void broadcastLocationUpdate(Location location) {
+        websocketManager.broadcast(
+            "driver-" + location.getUserId(),
+            new LocationUpdateMessage(location)
+        );
+    }
+}</code></pre>
+
+                <h4>C. Matching Engine - Driver Assignment Algorithm</h4>
+                <pre><code class="language-java">// Matching Engine - Sophisticated driver selection
+public class MatchingEngine {
+    private final LocationService locationService;
+    private final DriverRepository driverRepository;
+    private final RideRepository rideRepository;
+    private final EventPublisher eventPublisher;
+    private final RideCostCalculator costCalculator;
+    
+    public void matchRide(RideRequest request) {
+        // Step 1: Get nearby drivers
+        List&lt;String&gt; nearbyDriverIds = locationService.findNearbyDrivers(
+            request.getPickupLat(),
+            request.getPickupLng(),
+            10
+        );
+        
+        // Step 2: Score drivers based on multiple factors
+        List&lt;DriverScore&gt; scoredDrivers = nearbyDriverIds.stream()
+            .map(id -> scoreDriver(id, request))
+            .sorted(Comparator.comparingDouble(DriverScore::getScore).reversed())
+            .limit(5)
+            .collect(Collectors.toList());
+        
+        // Step 3: Try to match with top drivers
+        for (DriverScore score : scoredDrivers) {
+            if (sendMatchRequest(score.getDriverId(), request)) {
+                createRide(score.getDriverId(), request);
+                return;
+            }
+        }
+        
+        // No drivers available - queue the request
+        rideRepository.addToQueue(request);
+        eventPublisher.publish("ride-queued", new RideQueuedEvent(request));
+    }
+    
+    private DriverScore scoreDriver(String driverId, RideRequest request) {
+        Driver driver = driverRepository.findById(driverId).orElseThrow();
+        
+        double score = 0;
+        
+        // Distance (0.4 weight)
+        double distance = calculateDistance(
+            driver.getLatitude(),
+            driver.getLongitude(),
+            request.getPickupLat(),
+            request.getPickupLng()
+        );
+        score += (100 - distance * 2) * 0.4;
+        
+        // Rating (0.3 weight)
+        score += (driver.getRating() / 5.0 * 100) * 0.3;
+        
+        // Acceptance rate (0.2 weight)
+        score += driver.getAcceptanceRate() * 100 * 0.2;
+        
+        // Current load (0.1 weight)
+        score += (100 - driver.getActiveRides() * 10) * 0.1;
+        
+        return new DriverScore(driverId, score);
+    }
+    
+    private boolean sendMatchRequest(String driverId, RideRequest request) {
+        try {
+            DriverResponse response = websocketManager.waitForResponse(
+                driverId,
+                request.getId(),
+                5 // 5 second timeout
+            );
+            return response.isAccepted();
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+    
+    private void createRide(String driverId, RideRequest request) {
+        Ride ride = new Ride(
+            UUID.randomUUID().toString(),
+            request.getRiderId(),
+            driverId,
+            request.getPickupLocation(),
+            request.getDropoffLocation(),
+            RideStatus.ASSIGNED
+        );
+        
+        // Calculate cost
+        BigDecimal cost = costCalculator.calculateCost(
+            request.getPickupLocation(),
+            request.getDropoffLocation(),
+            request.getRideType()
+        );
+        ride.setCost(cost);
+        
+        rideRepository.save(ride);
+        eventPublisher.publish("ride-created", new RideCreatedEvent(ride));
+    }
+}</code></pre>
+
+                <h4>D. Payment Service (OCP + Strategy Pattern)</h4>
+                <pre><code class="language-java">// Payment Gateway Interface (OCP)
+public interface PaymentGateway {
+    PaymentResult process(PaymentRequest request);
+    PaymentResult refund(String transactionId);
+}
+
+// Multiple implementations
+public class StripePaymentGateway implements PaymentGateway {
+    private final StripeClient stripeClient;
+    
+    @Override
+    public PaymentResult process(PaymentRequest request) {
+        try {
+            Charge charge = stripeClient.createCharge(
+                request.getAmount().longValue(),
+                request.getToken()
+            );
+            return new PaymentResult(true, charge.getId(), null);
+        } catch (StripeException e) {
+            return new PaymentResult(false, null, e.getMessage());
+        }
+    }
+    
+    @Override
+    public PaymentResult refund(String txnId) {
+        try {
+            Refund refund = stripeClient.createRefund(txnId);
+            return new PaymentResult(true, refund.getId(), null);
+        } catch (StripeException e) {
+            return new PaymentResult(false, null, e.getMessage());
+        }
+    }
+}
+
+// Payment Service with Strategy
+public class PaymentService {
+    private final Map&lt;String, PaymentGateway&gt; gateways;
+    private final PaymentRepository repository;
+    private final EventPublisher eventPublisher;
+    private final RetryStrategy retryStrategy;
+    
+    public PaymentResult processPayment(PaymentRequest request) {
+        Payment payment = new Payment(
+            request.getRideId(),
+            request.getUserId(),
+            request.getAmount(),
+            request.getPaymentMethod()
+        );
+        
+        repository.save(payment);
+        
+        try {
+            PaymentGateway gateway = gateways.get(request.getPaymentMethod().name());
+            PaymentResult result = retryStrategy.executeWithRetry(() ->
+                gateway.process(request)
+            );
+            
+            if (result.isSuccess()) {
+                payment.setStatus(PaymentStatus.SUCCESS);
+                repository.update(payment);
+                eventPublisher.publish("payment-success",
+                    new PaymentSuccessEvent(payment, result.getTransactionId())
+                );
+            } else {
+                payment.setStatus(PaymentStatus.FAILED);
+                repository.update(payment);
+                eventPublisher.publish("payment-failed",
+                    new PaymentFailedEvent(payment, result.getError())
+                );
+            }
+            
+            return result;
+        } catch (Exception e) {
+            payment.setStatus(PaymentStatus.FAILED);
+            repository.update(payment);
+            throw new PaymentProcessingException("Payment failed", e);
+        }
+    }
+}</code></pre>
+
+                <h4>E. Ride Service (State Pattern)</h4>
+                <pre><code class="language-java">// Ride States
+public interface RideState {
+    void startRide(Ride ride);
+    void completeRide(Ride ride);
+    void cancelRide(Ride ride);
+    String getStatus();
+}
+
+public class AssignedRideState implements RideState {
+    @Override
+    public void startRide(Ride ride) {
+        ride.setState(new OngoingRideState());
+        ride.setStartTime(LocalDateTime.now());
+    }
+    
+    @Override
+    public void completeRide(Ride ride) {
+        throw new IllegalStateException("Cannot complete assigned ride");
+    }
+    
+    @Override
+    public void cancelRide(Ride ride) {
+        ride.setState(new CancelledRideState());
+    }
+    
+    @Override
+    public String getStatus() {
+        return "ASSIGNED";
+    }
+}
+
+public class OngoingRideState implements RideState {
+    @Override
+    public void startRide(Ride ride) {
+        throw new IllegalStateException("Ride already started");
+    }
+    
+    @Override
+    public void completeRide(Ride ride) {
+        ride.setState(new CompletedRideState());
+        ride.setEndTime(LocalDateTime.now());
+    }
+    
+    @Override
+    public void cancelRide(Ride ride) {
+        throw new IllegalStateException("Cannot cancel ongoing ride");
+    }
+    
+    @Override
+    public String getStatus() {
+        return "ONGOING";
+    }
+}
+
+public class RideService {
+    private final RideRepository rideRepository;
+    private final EventPublisher eventPublisher;
+    private final PaymentService paymentService;
+    private final NotificationService notificationService;
+    
+    public void completeRide(String rideId) {
+        Ride ride = rideRepository.findById(rideId)
+            .orElseThrow(() -> new RideNotFoundException("Ride not found"));
+        
+        // Change state
+        ride.complete();
+        rideRepository.update(ride);
+        
+        // Process payment
+        PaymentRequest paymentRequest = new PaymentRequest(
+            rideId,
+            ride.getRiderId(),
+            ride.getCost(),
+            PaymentMethod.WALLET
+        );
+        
+        PaymentResult paymentResult = paymentService.processPayment(paymentRequest);
+        
+        if (!paymentResult.isSuccess()) {
+            throw new PaymentException("Payment failed");
+        }
+        
+        // Send notifications
+        notificationService.notifyRider(
+            ride.getRiderId(),
+            "Ride completed. Cost: " + ride.getCost()
+        );
+        
+        notificationService.notifyDriver(
+            ride.getDriverId(),
+            "Ride completed successfully"
+        );
+        
+        // Publish event
+        eventPublisher.publish("ride-completed",
+            new RideCompletedEvent(ride, paymentResult.getTransactionId())
+        );
+    }
+}</code></pre>
+
+                <h4>F. Rating Service (Observer Pattern)</h4>
+                <pre><code class="language-java">// Observer Interface
+public interface RatingObserver {
+    void onRatingReceived(Rating rating);
+}
+
+// Analytics Observer
+public class AnalyticsObserver implements RatingObserver {
+    private final AnalyticsService analyticsService;
+    
+    @Override
+    public void onRatingReceived(Rating rating) {
+        analyticsService.recordRating(rating);
+    }
+}
+
+// Notification Observer
+public class NotificationObserver implements RatingObserver {
+    private final NotificationService notificationService;
+    
+    @Override
+    public void onRatingReceived(Rating rating) {
+        if (rating.getScore() &lt; 3) {
+            notificationService.alertLowRating(rating);
+        }
+    }
+}
+
+// Rating Service with Observer Pattern
+public class RatingService {
+    private final RatingRepository ratingRepository;
+    private final List&lt;RatingObserver&gt; observers = new ArrayList&lt;&gt;();
+    private final UserService userService;
+    
+    public void subscribe(RatingObserver observer) {
+        observers.add(observer);
+    }
+    
+    public void submitRating(RatingRequest request) {
+        if (request.getScore() &lt; 1 || request.getScore() &gt; 5) {
+            throw new InvalidRatingException("Score must be 1-5");
+        }
+        
+        Rating rating = new Rating(
+            UUID.randomUUID().toString(),
+            request.getRideId(),
+            request.getFromUserId(),
+            request.getToUserId(),
+            request.getScore(),
+            request.getReview()
+        );
+        
+        ratingRepository.save(rating);
+        
+        // Update user's average rating
+        User toUser = userService.getUser(request.getToUserId());
+        BigDecimal newRating = calculateNewAverage(toUser, request.getScore());
+        toUser.setRating(newRating);
+        userService.updateUser(toUser);
+        
+        // Notify all observers
+        for (RatingObserver observer : observers) {
+            observer.onRatingReceived(rating);
+        }
+    }
+    
+    private BigDecimal calculateNewAverage(User user, int score) {
+        // Calculate weighted average
+        return null;
+    }
+}</code></pre>
+            </div>
+
+            <div class="card">
+                <h3>Data Model Design</h3>
+                <div class="diagram">
+                    <div class="mermaid">
+                        erDiagram
+                        USER ||--o{ RIDE : takes
+                        RIDE ||--|| DRIVER : "assigned to"
+                        RIDE ||--o{ PAYMENT : "has"
+                        RIDE ||--o{ RATING : "receives"
+                        USER ||--o{ RATING : "gives"
+                        
+                        USER {
+                            string user_id PK
+                            string phone_number
+                            string email
+                            string user_type
+                            decimal rating
+                            timestamp created_at
+                        }
+                        
+                        RIDE {
+                            string ride_id PK
+                            string rider_id FK
+                            string driver_id FK
+                            decimal amount
+                            string status
+                            timestamp created_at
+                            timestamp completed_at
+                        }
+                        
+                        PAYMENT {
+                            string payment_id PK
+                            string ride_id FK
+                            decimal amount
+                            string status
+                            string gateway
+                            timestamp created_at
+                        }
+                        
+                        RATING {
+                            string rating_id PK
+                            string ride_id FK
+                            string from_user_id FK
+                            string to_user_id FK
+                            int score
+                            string review
+                            timestamp created_at
+                        }
+                        
+                        DRIVER {
+                            string driver_id PK
+                            string user_id FK
+                            string vehicle_id
+                            string license
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Scalability & Resilience Strategies</h3>
+                <ul class="points">
+                    <li><span class="highlight">Sharding:</span> Shard users/rides by user_id using consistent hashing for horizontal scaling</li>
+                    <li><span class="highlight">Caching:</span> Redis cluster for location cache, user sessions, geohash index</li>
+                    <li><span class="highlight">Message Queue:</span> Kafka for asynchronous processing (payment, notifications, analytics)</li>
+                    <li><span class="highlight">Circuit Breaker:</span> Protect against payment gateway failures with automatic fallback</li>
+                    <li><span class="highlight">Load Balancing:</span> Round-robin with health checks, sticky sessions for WebSocket connections</li>
+                    <li><span class="highlight">Replication:</span> Multi-region deployment for disaster recovery and low-latency access</li>
+                    <li><span class="highlight">Monitoring:</span> Distributed tracing, structured logging, metrics collection with alerting</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Key Takeaways</h3>
+                <div class="callout">
+                    <h4>This Case Study Demonstrates:</h4>
+                    <ul class="points">
+                        <li><span class="highlight">LLD:</span> Class design with SRP, DIP, immutability, error handling</li>
+                        <li><span class="highlight">HLD:</span> Microservices architecture, database sharding, caching, message queuing</li>
+                        <li><span class="highlight">SOLID:</span> All five principles applied (SRP in User Service, OCP in Payment Service, etc.)</li>
+                        <li><span class="highlight">CAP:</span> Chose AP for location service (availability + partition tolerance), CP for payment (consistency + partition tolerance)</li>
+                        <li><span class="highlight">Design Patterns:</span> Observer (ratings), Strategy (payment), State (ride lifecycle), Factory (gateways)</li>
+                        <li><span class="highlight">Real-world Considerations:</span> Geohashing for efficient location queries, event-driven architecture for decoupling, saga pattern for distributed transactions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>System Design Interview Master Guide 2026 | Complete Reference for Technical Interviews</p>
+            <p>With LLD, HLD, SOLID Principles, CAP Theorem, Design Patterns & Real-World Case Study</p>
+            <p>Last Updated: March 2026</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.contentLoaderAsync();
+            document.querySelectorAll('pre code').forEach(block => {
+                hljs.highlightElement(block);
+            });
+        });
+    </script>
+</body>
+</html>
